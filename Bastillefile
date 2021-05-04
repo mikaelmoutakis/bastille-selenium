@@ -57,5 +57,5 @@ CMD echo " include /usr/local/etc/monit.d/*" >> /usr/local/etc/monitrc
 # Activates monit
 # This should start the scraper
 # See the /usr/local/etc/monit settings file
-SYSRC monit_enable = "YES"
+SYSRC monit_enable=YES
 SERVICE monit start

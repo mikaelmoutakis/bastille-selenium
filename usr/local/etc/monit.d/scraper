@@ -1,6 +1,6 @@
 ###### My monit config for the webscraper
 
-check process scraper with pidfile /var/log/scraper/scraper.pid
+check process scrape with pidfile /var/log/scraper/scraper.pid
     start program = "/usr/local/bin/scrape" with timeout 60 seconds
     stop program = "kill -9 `cat /var/log/scraper/scraper.pid`"
     if cpu > 60% for 2 cycles then alert
