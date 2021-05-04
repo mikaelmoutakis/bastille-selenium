@@ -1,0 +1,61 @@
+###############################################
+## Information:                              ##
+## This template installs FireFox + the      ##
+## selenium bindings for python.             ##
+## It also installs an a simple              ##
+## webscraper that is run as a daemon        ##
+## To restart the daemon when after a crash  ##
+## the monit daemon is installed             ##
+###############################################
+
+### Installing 3rd party programs ####
+# Selenium and network libraries
+PKG python37 py37-pip
+PKG firefox geckodriver py37-selenium
+PKG py37-beautifulsoup py37-requests
+
+# Logging and command line options
+PKG py37-docopt py37-loguru
+
+# Monitoring
+PKG monit
+
+# A nice command line editor
+PKG micro
+
+# Adds alias for python
+CMD ln /usr/local/bin/python3.7 /usr/local/bin/python
+CMD ln /usr/local/bin/python3.7 /usr/local/bin/python3
+
+### Installing my scripts ####
+
+# Copies the scripts into the jail
+# The python program is installed in /usr/local/lib/scraper/
+# The program is run using the /usr/local/bin/scrape script
+OVERLAY usr
+
+
+# Creates a non-admin user to run the scraper
+CMD pw user add -m -n selenium -s /bin/sh
+
+# Installs other python libraries in a specific folder
+CMD pip install -t /usr/local/lib/scraper progressbar2
+
+# Creates a directory for logging
+CMD mkdir -p /var/log/scraper
+CMD chown -R selenium:selenium /var/log/scraper
+
+
+### Monitoring of daemon ###
+# Activates the default config file
+# Adds a line that includes any monitoring config file
+# in /usr/local/etc/monit.d directory
+CMD cp /usr/local/etc/monitrc.sample /usr/local/etc/monitrc
+CMD echo " include /usr/local/etc/monit.d/*" >> /usr/local/etc/monitrc
+
+
+# Activates monit
+# This should start the scraper
+# See the /usr/local/etc/monit settings file
+SYSRC monit_enable = "YES"
+SERVICE monit start
