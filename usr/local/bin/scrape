@@ -1,8 +1,2 @@
 #!/usr/bin/env sh
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib/scraper/
-daemon -p /var/log/scraper/scraper.pid \
--t "Selenium webscraper" \
--u selenium \
-/usr/local/bin/python3 /usr/local/lib/scraper/scraper.py \
---config=/usr/local/etc/scraper.conf \
---headless
+su selenium -c "cd /usr/local/lib/scraper/ && /usr/local/bin/python3 /usr/local/lib/scraper/scraper.py --config=/usr/local/etc/scraper.conf --headless"

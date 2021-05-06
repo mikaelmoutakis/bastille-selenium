@@ -9,7 +9,7 @@ This silly webscraper retrieves a list of currently supported FreeBSD releases f
 the projects webpage, and then waits one minute before trying again. 
 
 ## Who is this for?
-Someone who wants a template for making their deployment script.  
+Someone who wants a starting point for deploying their own selenium-based webscraper on FreBSD.  
 
 ## What is Bastille
-A fantastic jail manager for FreeBSD. Jails fulfill a similar functions as linux containers. 
+A fantastic jail manager for FreeBSD. Jails fulfill similar functions as linux containers. 

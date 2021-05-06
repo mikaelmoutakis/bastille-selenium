@@ -34,12 +34,15 @@ CMD ln /usr/local/bin/python3.7 /usr/local/bin/python3
 # The program is run using the /usr/local/bin/scrape script
 OVERLAY usr
 
+# makes the main program executable
+CMD chmod +x /usr/local/bin/scrape
+
 
 # Creates a non-admin user to run the scraper
 CMD pw user add -m -n selenium -s /bin/sh
 
 # Installs other python libraries in a specific folder
-CMD pip install -t /usr/local/lib/scraper progressbar2
+CMD pip install -t /usr/local/lib/scraper python-pidfile
 
 # Creates a directory for logging
 CMD mkdir -p /var/log/scraper

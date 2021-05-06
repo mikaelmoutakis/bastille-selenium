@@ -26,6 +26,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from loguru import logger
 from docopt import docopt
+import pidfile
 
 # built-ins
 from pathlib import Path
@@ -95,9 +96,21 @@ def main(url, css, headless):
 
 
 if __name__ == "__main__":
-    arguments = docopt(__doc__, version="linkchecker 0.1")
+    arguments = docopt(__doc__, version="scraper.py 0.1")
+
+    #reading config file
+    config_path = arguments["--config"]
+    if not (Path(config_path).exists() and Path(config_path).is_file()):
+        logger.critical(f"Could not find config file '{config_path}'. Quitting.")
+        sys.exit(1)
+    else:
+        configs = configparser.ConfigParser()
+        configs.read(config_path)
+    URL = configs["css"]["url"]
+    CSS_ID = configs["css"]["id"]
+
     ## logging
-    logging_directory = Path("/var/log/scraper")
+    logging_directory = Path(configs["misc"]["logging_directory"])
     if logging_directory.exists() and logging_directory.is_dir():
         logger.add(
             Path.joinpath(logging_directory, "scraper.error.log"),
@@ -111,15 +124,10 @@ if __name__ == "__main__":
             retention="2 week",
             level="INFO",
         )
-    #reading config file
-    config_path = arguments["--config"]
-    if not (Path(config_path).exists() and Path(config_path).is_file()):
-        logger.critical(f"Could not find config file '{config_path}'. Quitting.")
-        sys.exit(1)
-    else:
-        configs = configparser.ConfigParser()
-        configs.read(config_path)
-    URL = configs["css"]["url"]
-    CSS_ID = configs["css"]["id"]
     #running main loop
-    main(URL, CSS_ID, arguments["--headless"])
+    try:
+        with pidfile.PIDFile(configs["misc"]["pidfile"]):
+            logger.info("Starting scraper")
+            main(URL, CSS_ID, arguments["--headless"])
+    except pidfile.AlreadyRunningError:
+        logger.warning("Quitting! Scraper already running")
