@@ -3,9 +3,7 @@
 ## This template installs FireFox + the      ##
 ## selenium bindings for python.             ##
 ## It also installs an a simple              ##
-## webscraper that is run as a daemon        ##
-## To restart the daemon when after a crash  ##
-## the monit daemon is installed             ##
+## webscraper                                ##
 ###############################################
 
 ### Installing 3rd party programs ####
