@@ -32,6 +32,7 @@ from pathlib import Path
 import configparser
 import sys
 import time
+import re
 
 
 def start_firefox(run_headless=True):
@@ -50,7 +51,7 @@ def retrieve_text_from_page(driver, url, page_element_css_id):
     WebDriverWait(driver, timeout=15).until(
         ec.presence_of_element_located((By.ID, page_element_css_id))
     )
-    elements = driver.find_elements_by_class_name(page_element_css_id)
+    elements = driver.find_elements_by_id(page_element_css_id)
     if elements:
         txt = elements[0].text
         return True, txt
@@ -74,16 +75,19 @@ def main(url, css, headless):
                 success,text = False,""
                 logger.error(f"Error with url: '{url}'")
             if success:
-                logger.info(f"Retrieved headline '{text}'")
+                logger.info(f"Retrieved text from '{url}'")
+                supported_releases = re.findall("[0-9]{2}\.[0-9]{1,2}",text)
+                logger.info(f"Currently supported FreeBSD releases: {', '.join(supported_releases)}")
                 successive_failures = 0
             else:
                 successive_failures += 1
                 logger.info(f"Failure no {successive_failures}")
-                logger.warning(f"Could not retrieve element")
+                logger.warning(f"Could not retrieve element with id '{css}'")
                 if successive_failures == 5:
                     logger.warning(f"Tried 5 times. Giving up.")
                     sys.exit(1)
-            time.sleep(2)
+            logger.info("Waiting 1 minute")
+            time.sleep(60)
     except KeyboardInterrupt:
         pass
     finally:
