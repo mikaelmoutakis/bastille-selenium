@@ -48,17 +48,3 @@ CMD pip install -t /usr/local/lib/scraper python-pidfile
 CMD mkdir -p /var/log/scraper
 CMD chown -R selenium:selenium /var/log/scraper
 
-
-### Monitoring of daemon ###
-# Activates the default config file
-# Adds a line that includes any monitoring config file
-# in /usr/local/etc/monit.d directory
-CMD cp /usr/local/etc/monitrc.sample /usr/local/etc/monitrc
-CMD echo " include /usr/local/etc/monit.d/*" >> /usr/local/etc/monitrc
-
-
-# Activates monit
-# This should start the scraper
-# See the /usr/local/etc/monit settings file
-SYSRC monit_enable=YES
-SERVICE monit start
